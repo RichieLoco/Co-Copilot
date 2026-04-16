@@ -1,5 +1,5 @@
 # Stage 1: Build the React app
-FROM node:20-alpine AS builder
+FROM node:25-alpine AS builder
 WORKDIR /app
 COPY package.json ./
 RUN npm install
@@ -7,7 +7,7 @@ COPY . .
 RUN npm run build
 
 # Stage 2: Production runtime
-FROM node:20-alpine AS runtime
+FROM node:25-alpine AS runtime
 WORKDIR /app
 
 # Only copy what we need at runtime
