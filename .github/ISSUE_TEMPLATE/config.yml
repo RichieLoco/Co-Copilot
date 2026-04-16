@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 💬 Discussions
+    url: https://github.com/RichieLoco/co-copilot/discussions
+    about: Ask questions, share ideas, or chat with other users
+  - name: 🔒 Security issues
+    url: https://github.com/RichieLoco/co-copilot/security/policy
+    about: Report a security vulnerability privately

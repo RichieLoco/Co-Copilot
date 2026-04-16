@@ -1,0 +1,23 @@
+{
+  "name": "co-copilot",
+  "version": "1.0.0",
+  "description": "Multi-model chat interface for GitHub Copilot subscriptions",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "express": "^4.21.2",
+    "node-fetch": "^3.3.2",
+    "compression": "^1.7.5"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.3.4",
+    "vite": "^6.0.7"
+  }
+}
