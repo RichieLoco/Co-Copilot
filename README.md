@@ -26,7 +26,7 @@ If you pay for **GitHub Copilot Pro or Pro+**, your subscription already include
 
 <div align="center">
 
-![Main interface screenshot](docs/images/screenshot-main.png)
+![Main interface screenshot](docs/images/screenshot-main.svg)
 
 *Main chat interface with model picker, syntax-highlighted code, and persistent project sidebar*
 
@@ -64,21 +64,21 @@ One-line deploy on your NAS, Raspberry Pi, VPS, or anywhere else you can run Nod
 <table>
 <tr>
 <td width="50%">
-<img src="docs/images/screenshot-models.png" alt="Model picker" />
+<img src="docs/images/screenshot-models.svg" alt="Model picker" />
 <p align="center"><em>Dynamic model picker grouped by provider</em></p>
 </td>
 <td width="50%">
-<img src="docs/images/screenshot-usage.png" alt="Usage tracking" />
+<img src="docs/images/screenshot-usage.svg" alt="Usage tracking" />
 <p align="center"><em>Premium request usage in sidebar</em></p>
 </td>
 </tr>
 <tr>
 <td width="50%">
-<img src="docs/images/screenshot-code.png" alt="Code output" />
+<img src="docs/images/screenshot-code.svg" alt="Code output" />
 <p align="center"><em>Syntax-highlighted code with copy button</em></p>
 </td>
 <td width="50%">
-<img src="docs/images/screenshot-projects.png" alt="Projects" />
+<img src="docs/images/screenshot-projects.svg" alt="Projects" />
 <p align="center"><em>Persistent projects and chat history</em></p>
 </td>
 </tr>

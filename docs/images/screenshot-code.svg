@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="700" height="380" viewBox="0 0 700 380">
+  <rect width="700" height="380" rx="12" fill="#0d1117"/>
+  <!-- Assistant avatar -->
+  <rect x="20" y="20" width="26" height="26" rx="7" fill="#d4a574"/>
+  <text x="33" y="38" font-family="system-ui,sans-serif" font-size="12" font-weight="700" fill="#0d1117" text-anchor="middle">◆</text>
+  <!-- Response text before code -->
+  <text x="58" y="36" font-family="system-ui,sans-serif" font-size="13" fill="#c9d1d9">Here's how to set up an Express proxy for GitHub's API:</text>
+  <!-- Code block -->
+  <rect x="58" y="54" width="620" height="260" rx="10" fill="#0d1117" stroke="#1b2028" stroke-width="1"/>
+  <!-- Code header -->
+  <rect x="58" y="54" width="620" height="32" rx="10" fill="#161b22"/>
+  <rect x="58" y="76" width="620" height="2" fill="#1b2028"/>
+  <text x="74" y="75" font-family="monospace" font-size="10" fill="#636e7b" letter-spacing="0.8">JAVASCRIPT</text>
+  <rect x="606" y="60" width="56" height="22" rx="5" fill="transparent" stroke="#1b2028" stroke-width="1"/>
+  <text x="634" y="76" font-family="system-ui,sans-serif" font-size="10" fill="#8b949e" text-anchor="middle">Copy</text>
+  <!-- Code lines -->
+  <text x="74" y="106" font-family="monospace" font-size="12.5"><tspan fill="#e88388">import</tspan><tspan fill="#c9d1d9"> express </tspan><tspan fill="#e88388">from</tspan><tspan fill="#a8cc8c"> "express"</tspan><tspan fill="#c9d1d9">;</tspan></text>
+  <text x="74" y="126" font-family="monospace" font-size="12.5"> </text>
+  <text x="74" y="146" font-family="monospace" font-size="12.5"><tspan fill="#e88388">const</tspan><tspan fill="#c9d1d9"> app = express();</tspan></text>
+  <text x="74" y="166" font-family="monospace" font-size="12.5"><tspan fill="#e88388">const</tspan><tspan fill="#c9d1d9"> PORT = </tspan><tspan fill="#dbab79">3000</tspan><tspan fill="#c9d1d9">;</tspan></text>
+  <text x="74" y="186" font-family="monospace" font-size="12.5"> </text>
+  <text x="74" y="206" font-family="monospace" font-size="12.5"><tspan fill="#636e7b">// Proxy to GitHub Models API</tspan></text>
+  <text x="74" y="226" font-family="monospace" font-size="12.5"><tspan fill="#c9d1d9">app.use(</tspan><tspan fill="#a8cc8c">"/api/models"</tspan><tspan fill="#c9d1d9">, </tspan><tspan fill="#e88388">async</tspan><tspan fill="#c9d1d9"> (req, res) =&gt; {</tspan></text>
+  <text x="74" y="246" font-family="monospace" font-size="12.5"><tspan fill="#c9d1d9">  </tspan><tspan fill="#e88388">const</tspan><tspan fill="#c9d1d9"> url = </tspan><tspan fill="#a8cc8c">`https://models.github.ai${</tspan></text>
+  <text x="74" y="266" font-family="monospace" font-size="12.5"><tspan fill="#a8cc8c">    req.url}`</tspan><tspan fill="#c9d1d9">;</tspan></text>
+  <text x="74" y="286" font-family="monospace" font-size="12.5"><tspan fill="#c9d1d9">  </tspan><tspan fill="#e88388">const</tspan><tspan fill="#c9d1d9"> resp = </tspan><tspan fill="#e88388">await</tspan><tspan fill="#c9d1d9"> fetch(url, {</tspan></text>
+  <text x="74" y="306" font-family="monospace" font-size="12.5"><tspan fill="#c9d1d9">    headers: req.headers,</tspan></text>
+  <!-- Response text after code -->
+  <text x="58" y="340" font-family="system-ui,sans-serif" font-size="13" fill="#c9d1d9">The proxy forwards your <tspan fill="#e2b86b" font-family="monospace" font-size="12">Authorization</tspan> header to</text>
+  <text x="58" y="360" font-family="system-ui,sans-serif" font-size="13" fill="#c9d1d9">GitHub and streams the response back to your browser.</text>
+</svg>
