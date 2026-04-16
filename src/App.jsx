@@ -200,6 +200,8 @@ export default function App(){
       const reader=res.body.getReader(),dec=new TextDecoder();let aT="";setMsgs([...updated,{role:"assistant",content:"",_display:""}]);let buf="";
       while(true){const{done,value}=await reader.read();if(done)break;buf+=dec.decode(value,{stream:true});const lns=buf.split("\n");buf=lns.pop()||"";for(const ln of lns){if(!ln.startsWith("data: "))continue;const d=ln.slice(6).trim();if(d==="[DONE]")break;try{const delta=JSON.parse(d).choices?.[0]?.delta?.content;if(delta){aT+=delta;setMsgs(prev=>{const c=[...prev];c[c.length-1]={...c[c.length-1],content:aT,_display:aT};return c;});}}catch{}}}
       const final=[...updated,{role:"assistant",content:aT||"(Empty response)",_display:aT||"(Empty response)"}];setMsgs(final);await saveMsgs(final,cid,pid);
+      // Auto-refresh usage stats after each successful response
+      fetchUsage();
     }catch(err){const isNetwork=err.message?.includes("Failed to fetch")||err.message?.includes("NetworkError")||err.message?.includes("Load failed");setError(isNetwork?"Cannot reach proxy server. Make sure the Co-Copilot server is running.":err.message);setMsgs(prev=>{const c=[...prev];if(c[c.length-1]?.role==="assistant"&&!c[c.length-1].content)c.pop();return c;});}finally{setLoading(false);}
   };
 
@@ -226,11 +228,10 @@ export default function App(){
       </button>}
 
       {totalUsage&&<button className="uw" onClick={()=>setShowUsage(!showUsage)}>
-        <div className="ur"><span className="ul">Requests Used</span><span className="uv">{totalUsage.total.toLocaleString()}</span></div>
+        <div className="ur"><span className="ul">Premium Requests Used</span><span className="uv">{totalUsage.total.toLocaleString()}</span></div>
         <div className="ur"><span className="ul">Usage Value</span><span className="uv">${totalUsage.cost.toFixed(2)}</span></div>
         {showUsage&&totalUsage.items.map((it,i)=><div key={i} className="ud"><span>{it.model||it.sku}</span><span>{it.grossQuantity} req · ${it.grossAmount?.toFixed(2)}{it.netAmount>0?" ("+it.netAmount.toFixed(2)+" overage)":""}</span></div>)}
         {showUsage&&<div style={{fontSize:10,color:"#484f58",marginTop:4,textAlign:"center"}}>Within plan allowance · overage billed at $0.04/req</div>}
-        <div className="ufr" onClick={e=>{e.stopPropagation();fetchUsage();}}>↻ Refresh</div>
       </button>}
       {!totalUsage&&token&&<div className="uw" style={{cursor:"default"}}>
         <div className="ur"><span className="ul">Premium Requests</span><span className="uv" style={{color:"#636e7b"}}>—</span></div>
@@ -347,7 +348,6 @@ export default function App(){
 .ur{display:flex;justify-content:space-between;align-items:center;margin-bottom:2px}
 .ul{font-size:11px;color:#636e7b}.uv{font-size:13px;font-weight:600;color:#e6edf3;font-family:'JetBrains Mono',monospace}
 .ud{display:flex;justify-content:space-between;font-size:10px;color:#636e7b;margin-top:4px;padding-top:4px;border-top:1px solid rgba(255,255,255,.04)}
-.ufr{font-size:11px;color:#6cb6ff;text-align:center;margin-top:6px}
 .sst{display:flex;justify-content:space-between;align-items:center;padding:12px 14px 6px;font-size:10px;text-transform:uppercase;letter-spacing:1.2px;color:#484f58;font-weight:600}
 .pl,.cl{flex:1;overflow-y:auto;padding:0 8px}
 .pi,.ci{display:flex;align-items:center;gap:2px;border-radius:6px;margin-bottom:2px}
