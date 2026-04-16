@@ -116,26 +116,21 @@ export default function App(){
 
   useEffect(()=>{if(!ready)return;sSet("cc-settings",{token,username,sysPrompt,temp,maxTok,modelId});},[token,username,sysPrompt,temp,maxTok,modelId,ready]);
 
-  // Fallback model list (used when CORS blocks models.github.ai in browser)
+  // Fallback model list (used when network is blocked e.g. artifact sandbox)
+  // NOTE: Anthropic/Claude models are NOT available via the GitHub Models API.
+  // Claude is only accessible through Copilot's internal infrastructure (VS Code, github.com).
+  // GitHub has indicated they intend to add Claude to the Models API in the future.
   const FALLBACK_MODELS = [
-    {id:"anthropic/claude-opus-4-6",name:"Claude Opus 4.6",publisher:"Anthropic",supported_input_modalities:["text","image"],supported_output_modalities:["text"],rate_limit_tier:"low"},
-    {id:"anthropic/claude-sonnet-4-6",name:"Claude Sonnet 4.6",publisher:"Anthropic",supported_input_modalities:["text","image"],supported_output_modalities:["text"],rate_limit_tier:"low"},
-    {id:"anthropic/claude-sonnet-4-5",name:"Claude Sonnet 4.5",publisher:"Anthropic",supported_input_modalities:["text","image"],supported_output_modalities:["text"],rate_limit_tier:"low"},
-    {id:"anthropic/claude-haiku-4-5",name:"Claude Haiku 4.5",publisher:"Anthropic",supported_input_modalities:["text","image"],supported_output_modalities:["text"],rate_limit_tier:"high"},
-    {id:"openai/gpt-5.4",name:"GPT-5.4",publisher:"OpenAI",supported_input_modalities:["text","image"],supported_output_modalities:["text"],rate_limit_tier:"low"},
-    {id:"openai/gpt-4.1",name:"GPT-4.1",publisher:"OpenAI",supported_input_modalities:["text","image","audio"],supported_output_modalities:["text"],rate_limit_tier:"high"},
-    {id:"openai/gpt-4.1-mini",name:"GPT-4.1 Mini",publisher:"OpenAI",supported_input_modalities:["text","image"],supported_output_modalities:["text"],rate_limit_tier:"high"},
+    {id:"openai/gpt-4.1",name:"GPT-4.1",publisher:"OpenAI",supported_input_modalities:["text","image"],supported_output_modalities:["text"],rate_limit_tier:"high"},
+    {id:"openai/gpt-4.1-mini",name:"GPT-4.1 Mini",publisher:"OpenAI",supported_input_modalities:["text","image"],supported_output_modalities:["text"],rate_limit_tier:"low"},
     {id:"openai/gpt-4o",name:"GPT-4o",publisher:"OpenAI",supported_input_modalities:["text","image"],supported_output_modalities:["text"],rate_limit_tier:"high"},
-    {id:"openai/gpt-4o-mini",name:"GPT-4o Mini",publisher:"OpenAI",supported_input_modalities:["text"],supported_output_modalities:["text"],rate_limit_tier:"high"},
-    {id:"openai/o4-mini",name:"o4-mini",publisher:"OpenAI",supported_input_modalities:["text"],supported_output_modalities:["text"],rate_limit_tier:"low"},
-    {id:"google/gemini-2.5-pro",name:"Gemini 2.5 Pro",publisher:"Google",supported_input_modalities:["text","image"],supported_output_modalities:["text"],rate_limit_tier:"low"},
-    {id:"google/gemini-2.5-flash",name:"Gemini 2.5 Flash",publisher:"Google",supported_input_modalities:["text","image"],supported_output_modalities:["text"],rate_limit_tier:"high"},
-    {id:"google/gemini-2.0-flash",name:"Gemini 2.0 Flash",publisher:"Google",supported_input_modalities:["text","image"],supported_output_modalities:["text"],rate_limit_tier:"high"},
-    {id:"meta/llama-4-maverick",name:"Llama 4 Maverick",publisher:"Meta",supported_input_modalities:["text"],supported_output_modalities:["text"],rate_limit_tier:"high"},
-    {id:"meta/llama-4-scout",name:"Llama 4 Scout",publisher:"Meta",supported_input_modalities:["text"],supported_output_modalities:["text"],rate_limit_tier:"high"},
-    {id:"mistral/mistral-large",name:"Mistral Large",publisher:"Mistral",supported_input_modalities:["text"],supported_output_modalities:["text"],rate_limit_tier:"high"},
-    {id:"mistral/mistral-small-4",name:"Mistral Small 4",publisher:"Mistral",supported_input_modalities:["text"],supported_output_modalities:["text"],rate_limit_tier:"high"},
-    {id:"deepseek/deepseek-v3.2",name:"DeepSeek V3.2",publisher:"DeepSeek",supported_input_modalities:["text"],supported_output_modalities:["text"],rate_limit_tier:"high"},
+    {id:"openai/gpt-4o-mini",name:"GPT-4o Mini",publisher:"OpenAI",supported_input_modalities:["text"],supported_output_modalities:["text"],rate_limit_tier:"low"},
+    {id:"openai/o4-mini",name:"o4-mini",publisher:"OpenAI",supported_input_modalities:["text"],supported_output_modalities:["text"],rate_limit_tier:"custom"},
+    {id:"openai/o3",name:"o3",publisher:"OpenAI",supported_input_modalities:["text","image"],supported_output_modalities:["text"],rate_limit_tier:"custom"},
+    {id:"deepseek/deepseek-r1",name:"DeepSeek-R1",publisher:"DeepSeek",supported_input_modalities:["text"],supported_output_modalities:["text"],rate_limit_tier:"custom"},
+    {id:"meta/llama-4-maverick-17b-128e-instruct-fp8",name:"Llama 4 Maverick",publisher:"Meta",supported_input_modalities:["text","image"],supported_output_modalities:["text"],rate_limit_tier:"high"},
+    {id:"mistral-ai/mistral-small-2503",name:"Mistral Small 3.1",publisher:"Mistral AI",supported_input_modalities:["text","image"],supported_output_modalities:["text"],rate_limit_tier:"low"},
+    {id:"xai/grok-3",name:"Grok 3",publisher:"xAI",supported_input_modalities:["text"],supported_output_modalities:["text"],rate_limit_tier:"custom"},
   ];
   const [usingFallback,setUsingFallback]=useState(false);
 
@@ -144,7 +139,11 @@ export default function App(){
     fetch(CATALOG_URL,{headers:{Accept:"application/vnd.github+json",Authorization:`Bearer ${token}`,"X-GitHub-Api-Version":API_VER}})
       .then(r=>{if(!r.ok)throw new Error(`${r.status}`);return r.json();})
       .then(data=>{
-        if(Array.isArray(data)){const chat=data.filter(m=>m.supported_output_modalities?.includes("text"));setCatalog(chat);if(!modelId&&chat.length>0){const pref=chat.find(m=>m.id?.includes("claude-sonnet"))||chat[0];setModelId(pref.id);}}
+        if(Array.isArray(data)){
+          const chat=data.filter(m=>m.supported_output_modalities?.includes("text"));
+          setCatalog(chat);
+          if(!modelId&&chat.length>0){const pref=chat.find(m=>m.id==="openai/gpt-4.1")||chat[0];setModelId(pref.id);}
+        }
         // Also try to get username
         fetch(`${GH_API}/user`,{headers:{Accept:"application/vnd.github+json",Authorization:`Bearer ${token}`,"X-GitHub-Api-Version":API_VER}}).then(r=>r.json()).then(d=>{if(d.login)setUsername(d.login);}).catch(()=>{});
       })
@@ -152,7 +151,7 @@ export default function App(){
         // Network blocked (sandbox/CORS) — use fallback models, token is saved for deployment
         console.warn("Network blocked (sandbox). Using fallback models. Will auto-sync when self-hosted.");
         setCatalog(FALLBACK_MODELS);setUsingFallback(true);
-        if(!modelId)setModelId("anthropic/claude-sonnet-4-6");
+        if(!modelId)setModelId("openai/gpt-4.1");
         // Try username separately (may also fail in sandbox)
         fetch(`${GH_API}/user`,{headers:{Accept:"application/vnd.github+json",Authorization:`Bearer ${token}`,"X-GitHub-Api-Version":API_VER}}).then(r=>r.json()).then(d=>{if(d.login)setUsername(d.login);}).catch(()=>{});
       })
@@ -205,7 +204,7 @@ export default function App(){
   };
 
   const actProj=projects.find(p=>p.id===actProjId);
-  const totalUsage=useMemo(()=>{if(!usage?.usageItems)return null;return{total:usage.usageItems.reduce((s,i)=>s+(i.netQuantity||0),0),cost:usage.usageItems.reduce((s,i)=>s+(i.netAmount||0),0),items:usage.usageItems};},[usage]);
+  const totalUsage=useMemo(()=>{if(!usage?.usageItems)return null;return{total:usage.usageItems.reduce((s,i)=>s+(i.grossQuantity||0),0),cost:usage.usageItems.reduce((s,i)=>s+(i.grossAmount||0),0),items:usage.usageItems};},[usage]);
 
   const disconnect=()=>{setToken("");setUsername("");setCatalog([]);setModelId("");setUsage(null);};
 
@@ -227,9 +226,10 @@ export default function App(){
       </button>}
 
       {totalUsage&&<button className="uw" onClick={()=>setShowUsage(!showUsage)}>
-        <div className="ur"><span className="ul">Premium Requests</span><span className="uv">{totalUsage.total.toLocaleString()}</span></div>
-        <div className="ur"><span className="ul">Cost this period</span><span className="uv">${totalUsage.cost.toFixed(2)}</span></div>
-        {showUsage&&totalUsage.items.map((it,i)=><div key={i} className="ud"><span>{it.model||it.sku}</span><span>{it.netQuantity} · ${it.netAmount?.toFixed(2)}</span></div>)}
+        <div className="ur"><span className="ul">Requests Used</span><span className="uv">{totalUsage.total.toLocaleString()}</span></div>
+        <div className="ur"><span className="ul">Usage Value</span><span className="uv">${totalUsage.cost.toFixed(2)}</span></div>
+        {showUsage&&totalUsage.items.map((it,i)=><div key={i} className="ud"><span>{it.model||it.sku}</span><span>{it.grossQuantity} req · ${it.grossAmount?.toFixed(2)}{it.netAmount>0?" ("+it.netAmount.toFixed(2)+" overage)":""}</span></div>)}
+        {showUsage&&<div style={{fontSize:10,color:"#484f58",marginTop:4,textAlign:"center"}}>Within plan allowance · overage billed at $0.04/req</div>}
         <div className="ufr" onClick={e=>{e.stopPropagation();fetchUsage();}}>↻ Refresh</div>
       </button>}
       {!totalUsage&&token&&<div className="uw" style={{cursor:"default"}}>

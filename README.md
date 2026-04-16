@@ -5,7 +5,7 @@
 ### Your GitHub Copilot subscription, as a beautiful multi-model chat app
 
 **One chat interface for every model your Copilot plan includes.**
-Claude Opus, GPT-5.4, Gemini, Llama — all of them, all in one place.
+GPT-5, Gemini, Llama, DeepSeek, Grok — all of them, all in one place.
 
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Node.js](https://img.shields.io/badge/node-%E2%89%A518-43853d?logo=node.js&logoColor=white)](https://nodejs.org)
@@ -20,9 +20,9 @@ Claude Opus, GPT-5.4, Gemini, Llama — all of them, all in one place.
 
 ## What is this?
 
-If you pay for **GitHub Copilot Pro or Pro+**, your subscription already includes access to Claude Opus 4.6, Claude Sonnet 4.6, GPT-5.4, Gemini 2.5 Pro, Llama 4, and more — but only through the VS Code extension or the GitHub website, both of which are built for coding assistance, not general chat.
+If you pay for **GitHub Copilot Pro or Pro+**, your subscription already includes access to GPT-5, GPT-4.1, Gemini 2.5 Pro, Llama 4, DeepSeek-R1, Grok 3, and more — but only through the VS Code extension or the GitHub website, both of which are built for coding assistance, not general chat.
 
-**Co-Copilot** is a self-hosted web app that gives you a clean, general-purpose chat interface over the same models. Think ChatGPT or Claude.ai, but powered by the API access you're already paying for.
+**Co-Copilot** is a self-hosted web app that gives you a clean, general-purpose chat interface over those same models via the GitHub Models API. Think ChatGPT, but powered by the API access you're already paying for.
 
 <div align="center">
 
@@ -37,7 +37,7 @@ If you pay for **GitHub Copilot Pro or Pro+**, your subscription already include
 ## Features
 
 ### 🎯 Every model, one interface
-Pulls the full catalog from your Copilot plan dynamically. Claude Opus 4.6, Claude Sonnet 4.6, GPT-5.4, Gemini 2.5 Pro, Llama 4 Maverick, Mistral Large — whatever your tier includes, grouped by provider with vision and premium badges.
+Pulls the full catalog from your Copilot plan dynamically. GPT-5, GPT-4.1, o4-mini, o3, Gemini 2.5 Pro, Llama 4 Maverick, DeepSeek-R1, Grok 3, Mistral, and more — whatever your tier includes, grouped by provider with vision and premium badges.
 
 ### 📊 Live usage tracking
 A sidebar widget shows your monthly premium request count, total cost, and a per-model breakdown — pulled directly from GitHub's billing API. No more surprise Pro+ bills.
@@ -195,7 +195,13 @@ The chat functionality works with any valid token. However, the premium request 
 </details>
 
 <details>
-<summary><strong>Does this replace Claude.ai or ChatGPT?</strong></summary>
+<summary><strong>Where are the Claude / Anthropic models?</strong></summary>
+
+Claude models (Sonnet, Opus, Haiku) are available through your Copilot subscription within VS Code and github.com, but Anthropic has **not yet been added to the GitHub Models API** that Co-Copilot uses. This means Claude doesn't appear in Co-Copilot's model picker and can't be used for chat. GitHub has indicated they intend to add Claude to the Models API. When that happens, Claude will appear automatically — no update needed. Track the status [here](https://github.com/eclipse-theia/theia-ide/issues/675).
+</details>
+
+<details>
+<summary><strong>Does this replace ChatGPT?</strong></summary>
 
 For chat, it can. What it doesn't have (yet): web search, file generation, computer use, custom GPTs, long-term memory, shared conversations. It's a lean chat client, not a full platform.
 </details>

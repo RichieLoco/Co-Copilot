@@ -1,18 +1,15 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="400" height="480" viewBox="0 0 400 480">
   <rect width="400" height="480" rx="12" fill="#161b22"/>
-  <!-- Anthropic group -->
-  <text x="20" y="30" font-family="system-ui,sans-serif" font-size="10" font-weight="600" fill="#d4a574" letter-spacing="1">◆ ANTHROPIC</text>
-  <rect x="10" y="42" width="380" height="34" rx="6" fill="rgba(255,255,255,0.08)"/>
-  <text x="24" y="64" font-family="system-ui,sans-serif" font-size="13" fill="#e6edf3">Claude Opus 4.6</text>
-  <rect x="290" y="50" width="38" height="16" rx="4" fill="rgba(85,239,196,0.12)"/><text x="309" y="62" font-family="system-ui,sans-serif" font-size="9" fill="#55efc4" text-anchor="middle">vision</text>
+  <!-- xAI group -->
+  <text x="20" y="30" font-family="system-ui,sans-serif" font-size="10" font-weight="600" fill="#a8cc8c" letter-spacing="1">✦ XAI</text>
+  <rect x="10" y="42" width="380" height="34" rx="6" fill="transparent"/>
+  <text x="24" y="64" font-family="system-ui,sans-serif" font-size="13" fill="#c9d1d9">Grok 3</text>
   <rect x="332" y="50" width="48" height="16" rx="4" fill="rgba(212,165,116,0.12)"/><text x="356" y="62" font-family="system-ui,sans-serif" font-size="9" fill="#d4a574" text-anchor="middle">premium</text>
   <rect x="10" y="80" width="380" height="34" rx="6" fill="transparent"/>
-  <text x="24" y="102" font-family="system-ui,sans-serif" font-size="13" fill="#c9d1d9">Claude Sonnet 4.6</text>
-  <rect x="290" y="88" width="38" height="16" rx="4" fill="rgba(85,239,196,0.12)"/><text x="309" y="100" font-family="system-ui,sans-serif" font-size="9" fill="#55efc4" text-anchor="middle">vision</text>
+  <text x="24" y="102" font-family="system-ui,sans-serif" font-size="13" fill="#c9d1d9">Grok 3 Mini</text>
   <rect x="332" y="88" width="48" height="16" rx="4" fill="rgba(212,165,116,0.12)"/><text x="356" y="100" font-family="system-ui,sans-serif" font-size="9" fill="#d4a574" text-anchor="middle">premium</text>
   <rect x="10" y="118" width="380" height="34" rx="6" fill="transparent"/>
-  <text x="24" y="140" font-family="system-ui,sans-serif" font-size="13" fill="#c9d1d9">Claude Haiku 4.5</text>
-  <rect x="290" y="126" width="38" height="16" rx="4" fill="rgba(85,239,196,0.12)"/><text x="309" y="138" font-family="system-ui,sans-serif" font-size="9" fill="#55efc4" text-anchor="middle">vision</text>
+  <text x="24" y="140" font-family="system-ui,sans-serif" font-size="13" fill="#636e7b" font-style="italic">Claude models — coming soon</text>
   <!-- OpenAI group -->
   <text x="20" y="178" font-family="system-ui,sans-serif" font-size="10" font-weight="600" fill="#74b9ff" letter-spacing="1">● OPENAI</text>
   <rect x="10" y="190" width="380" height="34" rx="6" fill="transparent"/>
