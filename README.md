@@ -2,10 +2,10 @@
 
 # Co-Copilot
 
-### Your GitHub Copilot subscription, as a beautiful multi-model chat app
+### Your GitHub Copilot subscription, as a multi-model chat app
 
 **One chat interface for every model your Copilot plan includes.**
-GPT-5, Gemini, Llama, DeepSeek, Grok — all of them, all in one place.
+GPT-5, Gemini, Llama, DeepSeek, Grok - all of them, all in one place.
 
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Node.js](https://img.shields.io/badge/node-%E2%89%A518-43853d?logo=node.js&logoColor=white)](https://nodejs.org)
@@ -20,7 +20,7 @@ GPT-5, Gemini, Llama, DeepSeek, Grok — all of them, all in one place.
 
 ## What is this?
 
-If you pay for **GitHub Copilot Pro or Pro+**, your subscription already includes access to GPT-5, GPT-4.1, Gemini 2.5 Pro, Llama 4, DeepSeek-R1, Grok 3, and more — but only through the VS Code extension or the GitHub website, both of which are built for coding assistance, not general chat.
+If you pay for **GitHub Copilot Pro or Pro+**, your subscription already includes access to GPT-5, GPT-4.1, Gemini 2.5 Pro, Llama 4, DeepSeek-R1, Grok 3, and more - but only through the VS Code extension or the GitHub website, both of which are built for coding assistance, not general chat.
 
 **Co-Copilot** is a self-hosted web app that gives you a clean, general-purpose chat interface over those same models via the GitHub Models API. Think ChatGPT, but powered by the API access you're already paying for.
 
@@ -37,10 +37,10 @@ If you pay for **GitHub Copilot Pro or Pro+**, your subscription already include
 ## Features
 
 ### 🎯 Every model, one interface
-Pulls the full catalog from your Copilot plan dynamically. GPT-5, GPT-4.1, o4-mini, o3, Gemini 2.5 Pro, Llama 4 Maverick, DeepSeek-R1, Grok 3, Mistral, and more — whatever your tier includes, grouped by provider with vision and premium badges.
+Pulls the full catalog from your Copilot plan dynamically. GPT-5, GPT-4.1, o4-mini, o3, Gemini 2.5 Pro, Llama 4 Maverick, DeepSeek-R1, Grok 3, Mistral, and more - whatever your tier includes, grouped by provider with vision and premium badges.
 
 ### 📊 Live usage tracking
-A sidebar widget shows your monthly premium request count, total cost, and a per-model breakdown — pulled directly from GitHub's billing API. No more surprise Pro+ bills.
+A sidebar widget shows your monthly premium request count, total cost, and a per-model breakdown - pulled directly from GitHub's billing API. No more surprise Pro+ bills.
 
 ### 📁 Projects & persistent chats
 Organise conversations by topic. Create projects, rename them, drag chats between them. Everything persists in browser storage across sessions.
@@ -123,7 +123,7 @@ Open http://YOUR-SERVER-IP:3000.
 
 ## Why does Co-Copilot need a proxy server?
 
-GitHub's Models API (`models.github.ai`) doesn't send CORS headers, which means browsers block direct calls to it from anywhere except GitHub's own domain. The included Express server acts as a thin proxy — it sits between your browser and GitHub, forwards your requests with the right headers, and streams chat responses back token-by-token.
+GitHub's Models API (`models.github.ai`) doesn't send CORS headers, which means browsers block direct calls to it from anywhere except GitHub's own domain. The included Express server acts as a thin proxy - it sits between your browser and GitHub, forwards your requests with the right headers, and streams chat responses back token-by-token.
 
 **Your token never leaves your browser.** The proxy forwards the `Authorization` header through but never logs or stores it.
 
@@ -156,7 +156,7 @@ GitHub's Models API (`models.github.ai`) doesn't send CORS headers, which means 
 
 **Front-end:** React 18 + Vite, single-file component, zero runtime dependencies beyond React itself.
 **Back-end:** Express proxy (~100 lines), forwards `/api/models/*` to `models.github.ai` and `/api/gh/*` to `api.github.com`.
-**Storage:** Browser localStorage — no database required.
+**Storage:** Browser localStorage - no database required.
 
 See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for a deeper dive.
 
@@ -185,19 +185,19 @@ No. Co-Copilot is an unofficial third-party client that uses GitHub's public Mod
 <details>
 <summary><strong>Why not just use the VS Code extension?</strong></summary>
 
-The VS Code extension is excellent for coding, but it's embedded in an IDE. Co-Copilot is for the times when you want a general chat experience — asking questions, drafting emails, brainstorming, tutoring — without having a code editor in the way.
+The VS Code extension is excellent for coding, but it's embedded in an IDE. Co-Copilot is for the times when you want a general chat experience - asking questions, drafting emails, brainstorming, tutoring - without having a code editor in the way.
 </details>
 
 <details>
 <summary><strong>Can I use this with my organisation's Copilot Business/Enterprise plan?</strong></summary>
 
-The chat functionality works with any valid token. However, the premium request usage widget only works for individually-billed plans — org-billed seats don't expose usage on the user-level API. You'll still see your models, just without the billing widget.
+The chat functionality works with any valid token. However, the premium request usage widget only works for individually-billed plans - org-billed seats don't expose usage on the user-level API. You'll still see your models, just without the billing widget.
 </details>
 
 <details>
 <summary><strong>Where are the Claude / Anthropic models?</strong></summary>
 
-Claude models (Sonnet, Opus, Haiku) are available through your Copilot subscription within VS Code and github.com, but Anthropic has **not yet been added to the GitHub Models API** that Co-Copilot uses. This means Claude doesn't appear in Co-Copilot's model picker and can't be used for chat. GitHub has indicated they intend to add Claude to the Models API. When that happens, Claude will appear automatically — no update needed. Track the status [here](https://github.com/eclipse-theia/theia-ide/issues/675).
+Claude models (Sonnet, Opus, Haiku) are available through your Copilot subscription within VS Code and github.com, but Anthropic has **not yet been added to the GitHub Models API** that Co-Copilot uses. This means Claude doesn't appear in Co-Copilot's model picker and can't be used for chat. GitHub has indicated they intend to add Claude to the Models API. When that happens, Claude will appear automatically - no update needed. Track the status [here](https://github.com/eclipse-theia/theia-ide/issues/675).
 </details>
 
 <details>
@@ -232,7 +232,7 @@ Good first issues are tagged [`good first issue`](https://github.com/RichieLoco/
 
 ## License
 
-[MIT](LICENSE) — do whatever you want with it, just don't sue me.
+[MIT](LICENSE) - do whatever you want with it, just don't sue me.
 
 ---
 
@@ -240,7 +240,7 @@ Good first issues are tagged [`good first issue`](https://github.com/RichieLoco/
 
 - Built with [React](https://react.dev), [Vite](https://vitejs.dev), and [Express](https://expressjs.com)
 - Uses the [GitHub Models API](https://docs.github.com/en/rest/models)
-- Icon set: simple Unicode geometry — no external dependencies
+- Icon set: simple Unicode geometry - no external dependencies
 - Originally prototyped alongside Claude Opus 4.6
 
 ---
