@@ -12,7 +12,7 @@
   "dependencies": {
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "express": "^4.21.2",
+    "express": "^5.2.1",
     "node-fetch": "^3.3.2",
     "compression": "^1.7.5"
   },
