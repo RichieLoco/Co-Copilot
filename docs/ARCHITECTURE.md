@@ -8,8 +8,8 @@ A quick tour of how Co-Copilot is put together. Useful reading before submitting
 ┌──────────────┐       ┌─────────────────────────┐       ┌──────────────────────┐
 │   Browser    │       │   Co-Copilot server     │       │       GitHub         │
 │              │       │   (port 3000)           │       │                      │
-│  React SPA   │──────▶│                         │──────▶│  models.github.ai    │
-│              │  HTTP │  ┌───────────────────┐  │ HTTPS │  (catalog + chat)    │
+│  React SPA   │──────▶│                         │──────▶│ api.githubcopilot.com│
+│              │  HTTP │  ┌───────────────────┐  │ HTTPS │  (models + chat)     │
 │ localStorage │       │  │ Static /dist      │  │       │                      │
 │              │◀──────│  │ Proxy /api/*      │  │◀──────│  api.github.com      │
 └──────────────┘       │  └───────────────────┘  │       │  (user + billing)    │
@@ -26,12 +26,12 @@ Three moving parts:
 
 ## Why a proxy?
 
-GitHub's `models.github.ai` endpoint does not return CORS headers. That means a browser running on any origin other than `github.com` cannot call it directly — the browser blocks the response before JavaScript ever sees it.
+GitHub's `api.githubcopilot.com` endpoint does not return CORS headers. That means a browser running on any origin other than `github.com` cannot call it directly — the browser blocks the response before JavaScript ever sees it.
 
 A thin server-side proxy solves this because servers don't enforce CORS. The Express proxy:
 
-- Receives `fetch()` calls from the browser at `/api/models/*` or `/api/gh/*`
-- Strips the `Host` header and a couple of others
+- Receives `fetch()` calls from the browser at `/api/copilot/*`, `/api/models/*` or `/api/gh/*`
+- Strips the `Host` header and a couple of others, and adds the client-identification headers the Copilot API requires on `/api/copilot/*`
 - Forwards everything else (including the `Authorization: Bearer <PAT>` header) to the real GitHub endpoint
 - Streams the response body back to the browser unchanged
 
@@ -89,8 +89,8 @@ If that file gets much bigger, we can split it — but splitting too early creat
 
 When you send a message, the flow is:
 
-1. Browser builds a `fetch()` POST to `/api/models/inference/chat/completions` with `stream: true`
-2. Express proxy forwards to `https://models.github.ai/inference/chat/completions`
+1. Browser builds a `fetch()` POST to `/api/copilot/chat/completions` with `stream: true`
+2. Express proxy forwards to `https://api.githubcopilot.com/chat/completions`
 3. GitHub returns a `text/event-stream` response
 4. Proxy pipes the stream back to the browser without buffering
 5. Browser reads `data: {...}` lines, parses the JSON, extracts `choices[0].delta.content`
@@ -134,11 +134,11 @@ It's not nearly as sophisticated as Prism or Shiki, but it's fast, tiny, and cov
 On page load (after a valid token is saved), two fetches fire in parallel:
 
 ```js
-fetch('/api/models/catalog/models')  // live catalog from GitHub
+fetch('/api/copilot/models')         // models enabled for your account
 fetch('/api/gh/user')                // to get your username
 ```
 
-If the catalog call fails, we fall back to a curated hard-coded list so the UI is still usable. When the user actually sends a message with a fallback model, the real API will either accept it (your plan includes that model) or reject with a clear error (it doesn't).
+The response is filtered to chat models with an `enabled` policy that support `/chat/completions`, so what you see depends on your Copilot plan (Free gets a small set; paid plans unlock more Claude and other models). If the call fails, we fall back to a curated hard-coded list so the UI is still usable. When the user actually sends a message with a fallback model, the real API will either accept it (your plan includes that model) or reject with a clear error (it doesn't).
 
 ## Usage tracking
 

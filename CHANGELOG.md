@@ -11,10 +11,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Nothing yet
 
 ### Changed
-- Nothing yet
+- Model catalog and chat now use the Copilot API (`api.githubcopilot.com`) instead of the GitHub Models API, so Claude models appear. Only models enabled for the account are listed.
 
 ### Fixed
-- Nothing yet
+- Claude models missing from the model picker
 
 ## [1.0.0] - 2026-04-16
 
