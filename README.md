@@ -22,7 +22,7 @@ GPT-5, Gemini, Llama, DeepSeek, Grok - all of them, all in one place.
 
 If you pay for **GitHub Copilot Pro or Pro+**, your subscription already includes access to GPT-5, GPT-4.1, Gemini 2.5 Pro, Llama 4, DeepSeek-R1, Grok 3, and more - but only through the VS Code extension or the GitHub website, both of which are built for coding assistance, not general chat.
 
-**Co-Copilot** is a self-hosted web app that gives you a clean, general-purpose chat interface over those same models via the GitHub Models API. Think ChatGPT, but powered by the API access you're already paying for.
+**Co-Copilot** is a self-hosted web app that gives you a clean, general-purpose chat interface over those same models via the GitHub Copilot API. Think ChatGPT, but powered by the API access you're already paying for.
 
 <div align="center">
 
@@ -37,7 +37,7 @@ If you pay for **GitHub Copilot Pro or Pro+**, your subscription already include
 ## Features
 
 ### 🎯 Every model, one interface
-Pulls the full catalog from your Copilot plan dynamically. GPT-5, GPT-4.1, o4-mini, o3, Gemini 2.5 Pro, Llama 4 Maverick, DeepSeek-R1, Grok 3, Mistral, and more - whatever your tier includes, grouped by provider with vision and premium badges.
+Pulls the model list from your Copilot account dynamically. Claude, GPT and others - only the models enabled for your plan are shown, grouped by provider with vision badges. Free plans get a small set (e.g. Claude Haiku 4.5, GPT-4.1); paid plans unlock more.
 
 ### 📊 Live usage tracking
 A sidebar widget shows your monthly premium request count, total cost, and a per-model breakdown - pulled directly from GitHub's billing API. No more surprise Pro+ bills.
@@ -123,7 +123,7 @@ Open http://YOUR-SERVER-IP:3000.
 
 ## Why does Co-Copilot need a proxy server?
 
-GitHub's Models API (`models.github.ai`) doesn't send CORS headers, which means browsers block direct calls to it from anywhere except GitHub's own domain. The included Express server acts as a thin proxy - it sits between your browser and GitHub, forwards your requests with the right headers, and streams chat responses back token-by-token.
+GitHub's APIs (`api.githubcopilot.com`, `models.github.ai`) don't send CORS headers, which means browsers block direct calls to it from anywhere except GitHub's own domain. The included Express server acts as a thin proxy - it sits between your browser and GitHub, forwards your requests with the right headers, and streams chat responses back token-by-token.
 
 **Your token never leaves your browser.** The proxy forwards the `Authorization` header through but never logs or stores it.
 
@@ -149,7 +149,7 @@ GitHub's Models API (`models.github.ai`) doesn't send CORS headers, which means 
 ┌──────────────┐          ┌─────────────────────────┐          ┌────────────────┐
 │   Browser    │          │  Co-Copilot (port 3000) │          │    GitHub      │
 │              │─────────▶│                         │─────────▶│                │
-│  React SPA   │   HTTP   │  Express proxy +        │  HTTPS   │  models.github │
+│  React SPA   │   HTTP   │  Express proxy +        │  HTTPS   │  githubcopilot │
 │ localStorage │◀─────────│  static file server     │◀─────────│  api.github    │
 └──────────────┘          └─────────────────────────┘          └────────────────┘
 ```
@@ -179,7 +179,7 @@ Only if you exceed your plan's monthly premium request allowance. Within your al
 <details>
 <summary><strong>Is this affiliated with GitHub, Microsoft, or Anthropic?</strong></summary>
 
-No. Co-Copilot is an unofficial third-party client that uses GitHub's public Models API. It is not endorsed by or affiliated with GitHub, Microsoft, Anthropic, OpenAI, or any other company.
+No. Co-Copilot is an unofficial third-party client that uses GitHub's Copilot API, which is not officially documented for third-party apps. It is not endorsed by or affiliated with GitHub, Microsoft, Anthropic, OpenAI, or any other company.
 </details>
 
 <details>
@@ -195,7 +195,7 @@ The chat functionality works with any valid token. However, the premium request 
 </details>
 
 <details>
-<summary><strong>Where are the Claude / Anthropic models?</strong></summary>
+<summary><strong>Why can't I see all the Claude / Anthropic models?</strong></summary>
 
 Co-Copilot lists models from the Copilot API (`api.githubcopilot.com`), the same backend VS Code and the Copilot CLI use, because the GitHub Models API never included Claude. Only models enabled for your account are shown. If a Claude model is missing, enable it under [github.com/settings/copilot](https://github.com/settings/copilot) (or ask your org admin). The Copilot API is undocumented and unofficial for third-party apps, so it may change without notice.
 </details>
@@ -239,7 +239,7 @@ Good first issues are tagged [`good first issue`](https://github.com/RichieLoco/
 ## Acknowledgements
 
 - Built with [React](https://react.dev), [Vite](https://vitejs.dev), and [Express](https://expressjs.com)
-- Uses the [GitHub Models API](https://docs.github.com/en/rest/models)
+- Uses the GitHub Copilot API (the same backend as VS Code and the Copilot CLI)
 - Icon set: simple Unicode geometry - no external dependencies
 - Originally prototyped alongside Claude Opus 4.6
 
