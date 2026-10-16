@@ -155,7 +155,7 @@ GitHub's Models API (`models.github.ai`) doesn't send CORS headers, which means 
 ```
 
 **Front-end:** React 18 + Vite, single-file component, zero runtime dependencies beyond React itself.
-**Back-end:** Express proxy (~100 lines), forwards `/api/models/*` to `models.github.ai` and `/api/gh/*` to `api.github.com`.
+**Back-end:** Express proxy (~100 lines), forwards `/api/copilot/*` to `api.githubcopilot.com`, `/api/models/*` to `models.github.ai` and `/api/gh/*` to `api.github.com`.
 **Storage:** Browser localStorage - no database required.
 
 See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for a deeper dive.
@@ -197,7 +197,7 @@ The chat functionality works with any valid token. However, the premium request 
 <details>
 <summary><strong>Where are the Claude / Anthropic models?</strong></summary>
 
-Claude models (Sonnet, Opus, Haiku) are available through your Copilot subscription within VS Code and github.com, but Anthropic has **not yet been added to the GitHub Models API** that Co-Copilot uses. This means Claude doesn't appear in Co-Copilot's model picker and can't be used for chat. GitHub has indicated they intend to add Claude to the Models API. When that happens, Claude will appear automatically - no update needed. Track the status [here](https://github.com/eclipse-theia/theia-ide/issues/675).
+Co-Copilot lists models from the Copilot API (`api.githubcopilot.com`), the same backend VS Code and the Copilot CLI use, because the GitHub Models API never included Claude. Only models enabled for your account are shown. If a Claude model is missing, enable it under [github.com/settings/copilot](https://github.com/settings/copilot) (or ask your org admin). The Copilot API is undocumented and unofficial for third-party apps, so it may change without notice.
 </details>
 
 <details>

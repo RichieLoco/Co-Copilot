@@ -2,11 +2,27 @@ import { useState, useRef, useEffect, useCallback, useMemo } from "react";
 
 // API URLs route through the local proxy (Vite in dev, Express in prod)
 // to bypass browser CORS restrictions on models.github.ai and api.github.com
-const CATALOG_URL = "/api/models/catalog/models";
-const INFERENCE_URL = "/api/models/inference/chat/completions";
+// The Copilot API (api.githubcopilot.com) is used because it lists Claude; the
+// GitHub Models API (models.github.ai) has no Anthropic models.
+const CATALOG_URL = "/api/copilot/models";
+const INFERENCE_URL = "/api/copilot/chat/completions";
 const GH_API = "/api/gh";
 const API_VER = "2022-11-28";
 const PAT_URL = "https://github.com/settings/personal-access-tokens/new";
+
+// Convert the Copilot /models response into the shape the UI uses: chat models
+// that this account has enabled and that speak /chat/completions.
+function normalizeCopilotModels(list){
+  const vendors={"Azure OpenAI":"OpenAI","Moonshot AI":"Moonshot"};
+  const ok=list.filter(m=>m.capabilities?.type==="chat"&&m.policy?.state!=="disabled"
+    &&(!m.supported_endpoints||m.supported_endpoints.includes("/chat/completions"))
+    &&!["Fireworks","Experimental"].includes(m.vendor));
+  const ids=new Set(ok.map(m=>m.id));
+  return ok.filter(m=>{const base=m.id.replace(/-\d{4}-\d{2}-\d{2}$/,"");return base===m.id||!ids.has(base);})
+    .map(m=>({id:m.id,name:m.name,publisher:vendors[m.vendor]||m.vendor,
+      supported_input_modalities:m.capabilities?.supports?.vision?["text","image"]:["text"],
+      supported_output_modalities:["text"]}));
+}
 
 // Storage helpers — use localStorage for self-hosted deployment.
 // Wrapped in async to keep API parity with the artifact's window.storage.
@@ -117,20 +133,11 @@ export default function App(){
   useEffect(()=>{if(!ready)return;sSet("cc-settings",{token,username,sysPrompt,temp,maxTok,modelId});},[token,username,sysPrompt,temp,maxTok,modelId,ready]);
 
   // Fallback model list (used when network is blocked e.g. artifact sandbox)
-  // NOTE: Anthropic/Claude models are NOT available via the GitHub Models API.
-  // Claude is only accessible through Copilot's internal infrastructure (VS Code, github.com).
-  // GitHub has indicated they intend to add Claude to the Models API in the future.
   const FALLBACK_MODELS = [
-    {id:"openai/gpt-4.1",name:"GPT-4.1",publisher:"OpenAI",supported_input_modalities:["text","image"],supported_output_modalities:["text"],rate_limit_tier:"high"},
-    {id:"openai/gpt-4.1-mini",name:"GPT-4.1 Mini",publisher:"OpenAI",supported_input_modalities:["text","image"],supported_output_modalities:["text"],rate_limit_tier:"low"},
-    {id:"openai/gpt-4o",name:"GPT-4o",publisher:"OpenAI",supported_input_modalities:["text","image"],supported_output_modalities:["text"],rate_limit_tier:"high"},
-    {id:"openai/gpt-4o-mini",name:"GPT-4o Mini",publisher:"OpenAI",supported_input_modalities:["text"],supported_output_modalities:["text"],rate_limit_tier:"low"},
-    {id:"openai/o4-mini",name:"o4-mini",publisher:"OpenAI",supported_input_modalities:["text"],supported_output_modalities:["text"],rate_limit_tier:"custom"},
-    {id:"openai/o3",name:"o3",publisher:"OpenAI",supported_input_modalities:["text","image"],supported_output_modalities:["text"],rate_limit_tier:"custom"},
-    {id:"deepseek/deepseek-r1",name:"DeepSeek-R1",publisher:"DeepSeek",supported_input_modalities:["text"],supported_output_modalities:["text"],rate_limit_tier:"custom"},
-    {id:"meta/llama-4-maverick-17b-128e-instruct-fp8",name:"Llama 4 Maverick",publisher:"Meta",supported_input_modalities:["text","image"],supported_output_modalities:["text"],rate_limit_tier:"high"},
-    {id:"mistral-ai/mistral-small-2503",name:"Mistral Small 3.1",publisher:"Mistral AI",supported_input_modalities:["text","image"],supported_output_modalities:["text"],rate_limit_tier:"low"},
-    {id:"xai/grok-3",name:"Grok 3",publisher:"xAI",supported_input_modalities:["text"],supported_output_modalities:["text"],rate_limit_tier:"custom"},
+    {id:"claude-haiku-4.5",name:"Claude Haiku 4.5",publisher:"Anthropic",supported_input_modalities:["text","image"],supported_output_modalities:["text"]},
+    {id:"gpt-4.1",name:"GPT-4.1",publisher:"OpenAI",supported_input_modalities:["text","image"],supported_output_modalities:["text"]},
+    {id:"gpt-4o",name:"GPT-4o",publisher:"OpenAI",supported_input_modalities:["text","image"],supported_output_modalities:["text"]},
+    {id:"gpt-4o-mini",name:"GPT-4o mini",publisher:"OpenAI",supported_input_modalities:["text","image"],supported_output_modalities:["text"]},
   ];
   const [usingFallback,setUsingFallback]=useState(false);
 
@@ -139,10 +146,10 @@ export default function App(){
     fetch(CATALOG_URL,{headers:{Accept:"application/vnd.github+json",Authorization:`Bearer ${token}`,"X-GitHub-Api-Version":API_VER}})
       .then(r=>{if(!r.ok)throw new Error(`${r.status}`);return r.json();})
       .then(data=>{
-        if(Array.isArray(data)){
-          const chat=data.filter(m=>m.supported_output_modalities?.includes("text"));
+        if(Array.isArray(data?.data)){
+          const chat=normalizeCopilotModels(data.data);
           setCatalog(chat);
-          if(!modelId&&chat.length>0){const pref=chat.find(m=>m.id==="openai/gpt-4.1")||chat[0];setModelId(pref.id);}
+          if(!modelId||!chat.some(m=>m.id===modelId)){const pref=chat.find(m=>m.id.includes("claude-sonnet"))||chat.find(m=>m.id==="gpt-4.1")||chat[0];if(pref)setModelId(pref.id);}
         }
         // Also try to get username
         fetch(`${GH_API}/user`,{headers:{Accept:"application/vnd.github+json",Authorization:`Bearer ${token}`,"X-GitHub-Api-Version":API_VER}}).then(r=>r.json()).then(d=>{if(d.login)setUsername(d.login);}).catch(()=>{});
@@ -151,7 +158,7 @@ export default function App(){
         // Network blocked (sandbox/CORS) — use fallback models, token is saved for deployment
         console.warn("Network blocked (sandbox). Using fallback models. Will auto-sync when self-hosted.");
         setCatalog(FALLBACK_MODELS);setUsingFallback(true);
-        if(!modelId)setModelId("openai/gpt-4.1");
+        if(!modelId)setModelId("gpt-4.1");
         // Try username separately (may also fail in sandbox)
         fetch(`${GH_API}/user`,{headers:{Accept:"application/vnd.github+json",Authorization:`Bearer ${token}`,"X-GitHub-Api-Version":API_VER}}).then(r=>r.json()).then(d=>{if(d.login)setUsername(d.login);}).catch(()=>{});
       })
@@ -271,7 +278,7 @@ export default function App(){
                   <span className="mbs">{m.supported_input_modalities?.includes("image")&&<span className="bg vi">vision</span>}{m.rate_limit_tier==="low"&&<span className="bg pr">premium</span>}</span>
                 </button>)}
               </div>)}
-              {usingFallback&&<div style={{padding:"8px 10px",fontSize:11,color:"#636e7b",borderTop:"1px solid rgba(255,255,255,0.06)",marginTop:6}}>⚠ Live catalog unavailable — showing fallback list. Verify token has Models: Read permission.</div>}
+              {usingFallback&&<div style={{padding:"8px 10px",fontSize:11,color:"#636e7b",borderTop:"1px solid rgba(255,255,255,0.06)",marginTop:6}}>⚠ Live catalog unavailable — showing fallback list. Check that your token can access the Copilot API.</div>}
             </div>}
           </div>
         </div>

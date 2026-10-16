@@ -19,21 +19,36 @@ app.use("/api/models", async (req, res) => {
   await proxyRequest(req, res, targetUrl);
 });
 
+// Proxy: /api/copilot/* -> https://api.githubcopilot.com/*
+// Copilot's own API (what VS Code and Copilot CLI use). Unlike models.github.ai it
+// lists Claude models. It requires client-identification headers.
+const COPILOT_HEADERS = {
+  "Copilot-Integration-Id": "vscode-chat",
+  "Editor-Version": "vscode/1.95.0",
+  "User-Agent": "GithubCopilot/1.0",
+};
+app.use("/api/copilot", async (req, res) => {
+  const targetUrl = `https://api.githubcopilot.com${req.url}`;
+  await proxyRequest(req, res, targetUrl, COPILOT_HEADERS);
+});
+
 // Proxy: /api/gh/* -> https://api.github.com/*
 app.use("/api/gh", async (req, res) => {
   const targetUrl = `https://api.github.com${req.url}`;
   await proxyRequest(req, res, targetUrl);
 });
 
-async function proxyRequest(req, res, targetUrl) {
+async function proxyRequest(req, res, targetUrl, extraHeaders = {}) {
   try {
     // Forward client headers, replace Host
     const headers = {};
     for (const [k, v] of Object.entries(req.headers)) {
-      if (!["host", "content-length", "connection"].includes(k.toLowerCase())) {
+      if (!["host", "content-length", "connection", "origin", "referer"].includes(k.toLowerCase())) {
         headers[k] = v;
       }
     }
+
+    Object.assign(headers, extraHeaders);
 
     // Collect request body (for POST/PUT)
     let body;
